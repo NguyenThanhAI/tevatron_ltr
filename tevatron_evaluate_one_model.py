@@ -124,11 +124,17 @@ if __name__ == "__main__":
         for idx_3, idx_pred in enumerate(map_ids):
             pred = doc_refers[idx_pred]
             
+            is_true = False
             for article in relevant_articles:
                 if pred[0] == article["law_id"] and pred[1] == article["article_id"]:
                     true_positive += 1
-                else:
-                    false_positive += 1
+                    is_true = True
+                    break
+                #else:
+                #    false_positive += 1
+    
+            if not is_true:
+                false_positive += 1
             
         precision = true_positive / (true_positive + false_positive + 1e-20)
         recall = true_positive / actual_positive
