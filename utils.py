@@ -92,3 +92,57 @@ def load_cross_encoder(model_path: str) -> CrossEncoder:
                          max_length=256)
     
     return model
+
+
+def compute_metrics(predictions, doc_refers, relevant_docs):
+    mrr_el = 0
+    r1_el = 0
+    r5_el = 0
+    r10_el = 0
+    r20_el = 0
+    r25_el = 0
+    r50_el = 0
+    
+    for idx, idx_pred in enumerate(predictions):
+        pred = doc_refers[idx_pred]
+    
+        
+        if idx >= 50:
+            break
+        
+        for article in relevant_docs:
+            if pred[0] == article["law_id"] and pred[1] == article["article_id"]:
+                
+                mrr_el = 1 / (idx + 1)
+                
+                if idx == 0:
+                    r1_el = 1
+                    r5_el = 1
+                    r10_el = 1
+                    r20_el = 1
+                    r25_el = 1
+                    r50_el = 1
+                elif (idx >=1 and idx < 5):
+                    r5_el = 1
+                    r10_el = 1
+                    r20_el = 1
+                    r25_el = 1
+                    r50_el = 1
+                elif (idx >= 5 and idx < 10):
+                    r10_el = 1
+                    r20_el = 1
+                    r25_el = 1
+                    r50_el = 1
+                elif (idx >= 10 and idx < 20):
+                    r20_el = 1
+                    r25_el = 1
+                    r50_el = 1
+                elif (idx >= 20 and idx < 25):
+                    r25_el = 1
+                    r50_el = 1
+                elif (idx >= 25 and idx < 50):
+                    r50_el = 1
+                    
+                break
+            
+    return mrr_el, r1_el, r5_el, r10_el, r20_el, r25_el, r50_el
